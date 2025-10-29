@@ -1,4 +1,6 @@
-from solve.triangle import solve_triangle
+import pytest
+
+from solve.triangle import TriangleError, solve_triangle
 
 
 def test_right_triangle():
@@ -21,3 +23,8 @@ def test_insufficient_data():
         assert "Insufficient" in str(exc)
     else:
         raise AssertionError("Should have raised")
+
+
+def test_inconsistent_law_of_sines_inputs():
+    with pytest.raises(TriangleError):
+        solve_triangle({"a": 1.0, "A": 30.0, "b": 100.0})

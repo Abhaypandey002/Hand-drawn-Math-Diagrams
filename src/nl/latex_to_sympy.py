@@ -35,16 +35,19 @@ def _normalize(expr: str) -> str:
 def _extract_braced(text: str) -> Tuple[str, str]:
     if not text:
         return "", ""
-    if text[0] == "(":
+    opening = text[0]
+    if opening in "({[":
+        closing_map = {"(": ")", "{": "}", "[": "]"}
+        closing = closing_map[opening]
         depth = 0
         for idx, ch in enumerate(text):
-            if ch == "(":
+            if ch == opening:
                 depth += 1
-            elif ch == ")":
+            elif ch == closing:
                 depth -= 1
                 if depth == 0:
                     return text[1:idx], text[idx + 1 :]
-        raise LatexToSympyError("Unbalanced parentheses in integral bounds")
+        raise LatexToSympyError("Unbalanced delimiters in integral bounds")
     return text[0], text[1:]
 
 

@@ -28,7 +28,18 @@ def _law_of_cosines_for_side(a: float, b: float, gamma: float) -> float:
 
 
 def _law_of_sines_for_angle(a: float, A: float, b: float) -> float:
-    return _deg(math.asin(math.sin(_rad(A)) * b / a))
+    if a is None or b is None:
+        raise TriangleError("Missing side length for law of sines computation")
+    if a <= 0:
+        raise TriangleError("Side lengths must be positive for law of sines")
+    ratio = math.sin(_rad(A)) * b / a
+    if not math.isfinite(ratio):
+        raise TriangleError("Invalid ratio computed for law of sines")
+    epsilon = 1e-7
+    if ratio > 1 + epsilon or ratio < -1 - epsilon:
+        raise TriangleError("Inconsistent measurements for law of sines")
+    ratio = max(-1.0, min(1.0, ratio))
+    return _deg(math.asin(ratio))
 
 
 def _heron(a: float, b: float, c: float) -> float:
